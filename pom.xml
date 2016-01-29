@@ -1,0 +1,68 @@
+<project>
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.viae.library</groupId>
+	<artifactId>pdf</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>VIAE PDF</name>
+	<packaging>jar</packaging>
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<sourceExcludes>
+						<sourceExclude>**/node_modules/**</sourceExclude>
+					</sourceExcludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.pitest</groupId>
+				<artifactId>pitest-maven</artifactId>
+				<version>1.1.5</version>
+				<configuration>
+					<targetClasses>
+						<param>com.*</param>
+					</targetClasses>
+					<targetTests>
+						<param>com.*</param>
+					</targetTests>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.10.19</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>1.8.11</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+</project>
