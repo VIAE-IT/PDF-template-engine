@@ -1,4 +1,4 @@
-package com.viae.common.pdf;
+package com.viae.common.pdf.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -12,7 +12,7 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.junit.Test;
 
-import com.viae.common.pdf.TextWrapUtil.WrapResult;
+import com.viae.common.pdf.util.TextWrapUtil.WrapResult;
 
 public class TextWrapUtilTest {
     final String DUMMY_TEXT_SHORT = "Maarten Vandeperre";
