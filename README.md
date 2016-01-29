@@ -6,6 +6,7 @@ Most of the implementation details should be hidden for the users (e.g. width / 
 In a first phase, 2 render solutions will be available: a String based engine and a Java code based engine
 
 ##Example String based engine
+[Preview](https://github.com/VIAE-IT/PDF-template-engine/blob/master/docu/sample/voorbeeld_string_based.pdf)
 ```java
 final StringJoiner joiner = new StringJoiner("\n");
 joiner.add("conf|font_family|HELVETICA_BOLD|EOL|");
@@ -41,6 +42,7 @@ builder.buildPdf(joiner.toString(), PageSize.A4, "sample_string_based.pdf");
 ```
 
 ##Example Java code based engine
+[Preview](https://github.com/VIAE-IT/PDF-template-engine/blob/master/docu/sample/sample_java_based.pdf)
 ```java
 final JavaPdfBuilder.BuilderClient client = new JavaPdfBuilder.BuilderClient() {
   @Override
