@@ -1,14 +1,14 @@
 package com.viae.common.pdf.model;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import test.config.PojoTester;
 
 public class PdfContextTest {
 
     @Test
     public void test() {
-        fail("Not yet implemented");
+        PojoTester.test(PdfContext.class);
     }
 
 }

@@ -5,6 +5,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.viae.common.pojo.PojoBuilder;
+
 public class PdfContext {
     private String fontFamily;
     private float fontSize;
@@ -147,7 +149,7 @@ public class PdfContext {
     /**
      * Builder class to create {@link PdfContext} objects
      */
-    public final static class Builder {
+    public final static class Builder extends PojoBuilder<PdfContext>{
         private PdfContext context;
 
         private Builder() {
@@ -208,21 +210,25 @@ public class PdfContext {
             return this;
         }
 
+        @Override
         public Builder clean() {
             context = null;
             return this;
         }
 
+        @Override
         public Builder create() {
             context = new PdfContext();
             return this;
         }
 
+        @Override
         public Builder deepCopy(final PdfContext original) {
             context = new PdfContext(original);
             return this;
         }
 
+        @Override
         public PdfContext build() {
             return context;
         }
