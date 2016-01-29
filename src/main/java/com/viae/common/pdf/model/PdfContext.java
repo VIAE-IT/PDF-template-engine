@@ -233,7 +233,7 @@ public class PdfContext {
             return context;
         }
 
-        private static final class LazyInit {
+        static final class LazyInit {
             public static final Builder INSTANCE = new Builder();
         }
 
