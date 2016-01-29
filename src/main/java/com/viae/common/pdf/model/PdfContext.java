@@ -7,6 +7,12 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.viae.common.pojo.PojoBuilder;
 
+/**
+ * Context class to store layout data for the pdf page.
+ * You can compare these settings with CSS settings for HTML.
+ *
+ * @author Vandeperre Maarten
+ */
 public class PdfContext {
     private String fontFamily;
     private float fontSize;
