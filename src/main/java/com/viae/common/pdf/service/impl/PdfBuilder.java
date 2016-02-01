@@ -95,7 +95,7 @@ public class PdfBuilder {
     }
 
     protected void writeText(final String text, final PDDocument document, final PDRectangle pageSize) throws IOException{
-        final float positionY = getPositionY(pageSize, ++line);
+        float positionY = getPositionY(pageSize, ++line);
         if(positionY < 0){ //NEW PAGE
             contentStream.close();
             final PDPage page = new PDPage(pageSize);
@@ -107,7 +107,12 @@ public class PdfBuilder {
             final float newPositionY = getPositionY(pageSize, ++line);
             writeString(contentStream, text, getFontFamily(context.getFontFamily()), context.getFontSize(), context.getMarginLeft(), newPositionY);
         } else {
-            writeString(contentStream, text, getFontFamily(context.getFontFamily()), context.getFontSize(), context.getMarginLeft(), positionY);
+            final float maxLineWidth = pageSize.getWidth() - context.getMarginLeft() - context.getMarginRight();
+            final WrapResult<List<String>> textWrapResult = TextWrapUtil.wrapText(text, getFontFamily(context.getFontFamily()), context.getFontSize(), maxLineWidth);
+            for(final String textLine : textWrapResult.getWrapResult()){
+                writeString(contentStream, textLine, getFontFamily(context.getFontFamily()), context.getFontSize(), context.getMarginLeft(), positionY);
+                positionY = getPositionY(pageSize, ++line);
+            }
         }
     }
 
