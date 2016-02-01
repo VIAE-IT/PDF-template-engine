@@ -142,6 +142,9 @@ public class PdfBuilder {
      **/
     protected void writeTable(final PDPage page, final String[][] content) throws IOException {
         final int rows = content.length;
+        if(rows > 1){
+            throw new UnsupportedOperationException("Multi row is currently not supported");
+        }
         final int cols = content[0].length;
 
         final float colWidth = getColumnWidth(page, cols);

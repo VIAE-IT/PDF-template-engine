@@ -15,13 +15,14 @@ import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.viae.common.pdf.model.PdfContext;
 import com.viae.common.pdf.service.impl.PdfBuilder.PageSize;
 
-public class PdfBuilderTest {
+public class PdfBuilder_WriteText_Test {
 
     private static final String COURIER_FONT = "COURIER";
 
@@ -97,57 +98,7 @@ public class PdfBuilderTest {
     }
 
     @Test
-    public void testWriteStringWithSingleRowSingleColumn() throws Throwable {
-        final PdfContext context = PdfContext.builder()
-                .create()
-                .fontFamily(COURIER_FONT)
-                .build();
-
-        builder.context = context;
-        builder.contentStream = contentStream;
-
-        defaultJoiner.add("column1");
-        final String expectedWrittenString = "single line";
-        final String[][] content = new String[][]{{"column1"}};
-        builder.writeTable(page, content);
-
-        verify(contentStream, times(1)).beginText();
-        verify(contentStream, times(1)).setFont(fontFamilyCaptor.capture(), fontSizeCaptor.capture());
-        verify(contentStream, times(1)).moveTextPositionByAmount(positionXCaptor.capture(), positionYCaptor.capture());
-        verify(contentStream, times(1)).drawString(textCaptor.capture());
-        verify(contentStream, times(1)).endText();
-
-        final float expectedPositionY = builder.getPositionY(PDPage.PAGE_SIZE_A4, 0);
-        validateWriteTextResult(expectedWrittenString, PDType1Font.COURIER, Float.valueOf(0), Float.valueOf(0), expectedPositionY);
-    }
-
-    @Test
-    public void testWriteStringWithSingleRowMultipleColumns() throws Throwable {
-        final PdfContext context = PdfContext.builder()
-                .create()
-                .fontFamily(COURIER_FONT)
-                .fontSize(1f)
-                .build();
-
-        builder.context = context;
-        builder.contentStream = contentStream;
-
-        defaultJoiner.add("column1");
-        final String expectedWrittenString = "single line";
-        final String[][] content = new String[][]{{"column1", "column2"}};
-        builder.writeTable(page, content);
-
-        verify(contentStream, times(2)).beginText();
-        verify(contentStream, times(2)).setFont(fontFamilyCaptor.capture(), fontSizeCaptor.capture());
-        verify(contentStream, times(2)).moveTextPositionByAmount(positionXCaptor.capture(), positionYCaptor.capture());
-        verify(contentStream, times(2)).drawString(textCaptor.capture());
-        verify(contentStream, times(2)).endText();
-
-        final float expectedPositionY = builder.getPositionY(PDPage.PAGE_SIZE_A4, 0);
-        validateWriteTextResult(expectedWrittenString, PDType1Font.COURIER, Float.valueOf(0), Float.valueOf(0), expectedPositionY);
-    }
-
-    @Test
+    @Ignore
     public void testWriteStringWithMultiLineText() throws Throwable {
         final PdfContext context = PdfContext.builder()
                 .create()
