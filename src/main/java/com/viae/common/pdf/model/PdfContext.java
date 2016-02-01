@@ -13,6 +13,7 @@ import com.viae.common.pojo.PojoBuilder;
  *
  * @author Vandeperre Maarten
  */
+//TODO add comments on the fields + split in sub objects (table settings, text settings, ...)
 public class PdfContext {
     private String fontFamily;
     private float fontSize;
@@ -26,10 +27,11 @@ public class PdfContext {
     private float cellMarginBottom;
     private float textLinePadding;
 
-    public PdfContext(){
+    //TODO pojo tester should check on private constructors
+    private PdfContext(){
     }
 
-    public PdfContext(final PdfContext toCopy){
+    private PdfContext(final PdfContext toCopy){
         if(toCopy != null){
             setFontFamily(toCopy.getFontFamily());
             setFontSize(toCopy.getFontSize());
