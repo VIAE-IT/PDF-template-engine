@@ -14,7 +14,6 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.xobject.PDJpeg;
 import org.apache.pdfbox.pdmodel.graphics.xobject.PDPixelMap;
 import org.apache.pdfbox.pdmodel.graphics.xobject.PDXObjectImage;
@@ -32,7 +31,6 @@ public class PdfBuilder {
     protected PDPageContentStream contentStream; //TODO make private and add protected setter
     protected int line; //TODO make private and add protected setter
     protected float lastY; //TODO make private and add protected setter
-    protected float heightCorrection; //TODO make private and add protected setter
 
     public PdfBuilder(){
         context = PdfContext.builder().create().build();
@@ -46,19 +44,6 @@ public class PdfBuilder {
         switch (pageSize) {
             default:
                 return PDPage.PAGE_SIZE_A4;
-        }
-    }
-
-    protected PDFont getFontFamily(final String fontFamily) {
-        switch (fontFamily) {
-            case "HELVETICA_BOLD":
-                return PDType1Font.HELVETICA_BOLD;
-            case "HELVETICA_OBLIQUE":
-                return PDType1Font.HELVETICA_OBLIQUE;
-            case "COURIER":
-                return PDType1Font.COURIER;
-            default:
-                return PDType1Font.HELVETICA;
         }
     }
 
@@ -91,7 +76,7 @@ public class PdfBuilder {
         final float y = getPositionY(page.findMediaBox(), ++line) - height;
 
         contentStream.drawXObject(ximage, x, y, width, height);
-        heightCorrection += height;
+        lastY -= height;
     }
 
     protected void writeText(final String text, final PDDocument document, final PDRectangle pageSize) throws IOException{
@@ -102,15 +87,15 @@ public class PdfBuilder {
             document.addPage(page);
             contentStream = new PDPageContentStream(document, page);
             line = 0;
-            heightCorrection = 0;
 
             final float newPositionY = getPositionY(pageSize, ++line);
-            writeString(contentStream, text, getFontFamily(context.getFontFamily()), context.getFontSize(), context.getMarginLeft(), newPositionY);
+            writeString(contentStream, text, context.getFontFamily().getFontFamily(), context.getFontSize(), context.getMarginLeft(), newPositionY);
         } else {
             final float maxLineWidth = pageSize.getWidth() - context.getMarginLeft() - context.getMarginRight();
-            final WrapResult<List<String>> textWrapResult = TextWrapUtil.wrapText(text, getFontFamily(context.getFontFamily()), context.getFontSize(), maxLineWidth);
+            final WrapResult<List<String>> textWrapResult = TextWrapUtil.wrapText(text, context.getFontFamily(), context.getFontSize(), maxLineWidth);
+
             for(final String textLine : textWrapResult.getWrapResult()){
-                writeString(contentStream, textLine, getFontFamily(context.getFontFamily()), context.getFontSize(), context.getMarginLeft(), positionY);
+                writeString(contentStream, textLine, context.getFontFamily().getFontFamily(), context.getFontSize(), context.getMarginLeft(), positionY);
                 positionY = getPositionY(pageSize, ++line);
             }
         }
@@ -124,17 +109,17 @@ public class PdfBuilder {
         cos.moveTextPositionByAmount(marginLeft, positionY);
         cos.drawString(string);
         cos.endText();
-        heightCorrection += getLineHeight();
         lastY = positionY - getLineHeight();
     }
 
     protected float getPositionY(final PDRectangle rect, final int line){
-        final float result = rect.getHeight() - getLineHeight() * (line) - heightCorrection;
-        return result;
+        //final float result = rect.getHeight() - getLineHeight() * (line) - heightCorrection;
+        //return result;
+        return lastY - getLineHeight();
     }
 
     private float getLineHeight() {
-        final float tempLineHeight = getFontFamily(context.getFontFamily()).getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * context.getFontSize() + context.getTextLinePadding();
+        final float tempLineHeight = context.getFontFamily().getFontFamily().getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * context.getFontSize() + context.getTextLinePadding();
         final float currentLineHeight = context.getLineHeight() > 0 ? context.getLineHeight() : tempLineHeight;
         return currentLineHeight;
     }
@@ -155,9 +140,9 @@ public class PdfBuilder {
         final float colWidth = getColumnWidth(page, cols);
         final float tableWidth = colWidth * cols;
         final float colContentWidth = (colWidth - context.getCellMarginLeft() - context.getCellMarginRight());
-        final WrapResult<List<List<String>>> wrapResult = TextWrapUtil.wrapText(content[0], getFontFamily(context.getFontFamily()), context.getFontSize(), colContentWidth);
+        final WrapResult<List<List<String>>> wrapResult = TextWrapUtil.wrapText(content[0], context.getFontFamily(), context.getFontSize(), colContentWidth);
 
-        final float rowHeight = (getLineHeight()* wrapResult.getMaxNumberOfLines()) + context.getCellMarginTop() + context.getCellMarginBottom() + 2 * context.getBorderWidth();
+        final float rowHeight = (getLineHeight() * wrapResult.getMaxNumberOfLines()) + context.getCellMarginTop() + context.getCellMarginBottom() + 2 * context.getBorderWidth();
         final float tableHeight = rowHeight;
 
         final float y = lastY;
@@ -178,16 +163,15 @@ public class PdfBuilder {
 
         //now add the text
         float textx = context.getMarginLeft();
-        final float texty = y;
+        final float texty = y - rowHeight + context.getCellMarginBottom();
         for(int i = 0; i < content.length; i++){
             for(int j = 0 ; j < content[i].length; j++){
-                writeWrappedString(wrapResult.getWrapResult().get(j), textx, texty, rowHeight);
+                writeWrappedString(wrapResult.getWrapResult().get(j), textx, texty);
                 textx += colWidth;
             }
             textx = context.getMarginLeft();
         }
 
-        heightCorrection += rowHeight;
         lastY -= rowHeight;
     }
 
@@ -197,12 +181,12 @@ public class PdfBuilder {
         return colWidth;
     }
 
-    private void writeWrappedString(final List<String> textLines, final float textx, final float texty, final float rowHeight) throws IOException{
+    private void writeWrappedString(final List<String> textLines, final float textx, final float texty) throws IOException{
         int lineIndex = 0;
         for(final String text: textLines){
             contentStream.beginText();
-            contentStream.setFont(getFontFamily(context.getFontFamily()), context.getFontSize());
-            final float textYPosition = ((textLines.size() -1) * getLineHeight()) + texty - rowHeight + context.getCellMarginBottom() + (getLineHeight() / FONT_CORRECTING_FACTOR) - (lineIndex * getLineHeight());
+            contentStream.setFont(context.getFontFamily().getFontFamily(), context.getFontSize());
+            final float textYPosition = ((textLines.size() -1) * getLineHeight()) + texty + (getLineHeight() / FONT_CORRECTING_FACTOR) - (lineIndex * getLineHeight());
             contentStream.moveTextPositionByAmount(textx + context.getCellMarginLeft() , textYPosition);
             contentStream.drawString(text);
             contentStream.endText();

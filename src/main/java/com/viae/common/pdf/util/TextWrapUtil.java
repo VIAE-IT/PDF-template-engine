@@ -3,7 +3,7 @@ package com.viae.common.pdf.util;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.pdfbox.pdmodel.font.PDFont;
+import com.viae.common.pdf.model.PdfContext.FontFamily;
 
 /**
  * Utility class to handle text wrapping within the pdf.
@@ -21,7 +21,7 @@ public class TextWrapUtil {
      * @param maxLineWidth, the maximum width a text string should have within the pdf.
      * @return the wrap result: a combination of the max number of lines (i.e. how many lines were split of) and the lines them self.
      */
-    public static WrapResult<List<String>> wrapText(final String text, final PDFont fontFamily, final float fontSize, final float maxLineWidth) {
+    public static WrapResult<List<String>> wrapText(final String text, final FontFamily fontFamily, final float fontSize, final float maxLineWidth) {
         final List<String> result = new LinkedList<>();
         final float charWidth = getCharWidth(fontFamily, fontSize);
         final int maxCharAmount = (int) (maxLineWidth / charWidth);
@@ -58,7 +58,7 @@ public class TextWrapUtil {
      *  than max number of lines will be 2 (from the first result).
      *  than lines will contain 2 lines at index 0, and 1 line at index 1.
      */
-    public static WrapResult<List<List<String>>> wrapText(final String[] textArray, final PDFont fontFamily, final float fontSize, final float maxLineWidth) {
+    public static WrapResult<List<List<String>>> wrapText(final String[] textArray, final FontFamily fontFamily, final float fontSize, final float maxLineWidth) {
         final List<List<String>> result = new LinkedList<>();
         int maxAmountOfLines = 0;
         if(textArray != null){
@@ -71,8 +71,8 @@ public class TextWrapUtil {
         return new WrapResult<>(maxAmountOfLines, result);
     }
 
-    private static float getCharWidth(final PDFont fontFamily, final float fontSize) {
-        return fontFamily.getFontDescriptor().getFontBoundingBox().getWidth() / 1000 * fontSize;
+    private static float getCharWidth(final FontFamily fontFamily, final float fontSize) {
+        return fontFamily.getFontFamily().getFontDescriptor().getFontBoundingBox().getWidth() / 1000 * fontSize * fontFamily.getErrorMarginX();
     }
 
     /**

@@ -20,10 +20,11 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.viae.common.pdf.model.PdfContext;
+import com.viae.common.pdf.model.PdfContext.FontFamily;
 
 public class PdfBuilder_WriteTableRow_Test {
 
-    private static final String COURIER_FONT = "COURIER";
+    private static final FontFamily COURIER_FONT = FontFamily.COURIER;
     private static final PDFont DEFAULT_FONT = PDType1Font.COURIER;
     private static float DEFAULT_FONT_SIZE = 10f;
     private static float DEFAULT_Y_POSITION_1 = Float.valueOf(-7.9124994f);
@@ -56,7 +57,6 @@ public class PdfBuilder_WriteTableRow_Test {
     public void setupFreshFixture(){
         contentStream = mock(PDPageContentStream.class);
         builder.line = 0;
-        builder.heightCorrection = 0;
         builder.lastY = 0;
         page = new PDPage(PDPage.PAGE_SIZE_A4);
     }

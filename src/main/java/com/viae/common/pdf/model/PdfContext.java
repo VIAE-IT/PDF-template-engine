@@ -4,6 +4,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 import com.viae.common.pojo.PojoBuilder;
 
@@ -15,7 +17,7 @@ import com.viae.common.pojo.PojoBuilder;
  */
 //TODO add comments on the fields + split in sub objects (table settings, text settings, ...)
 public class PdfContext {
-    private String fontFamily;
+    private FontFamily fontFamily;
     private float fontSize;
     private float marginLeft;
     private float marginRight;
@@ -47,11 +49,11 @@ public class PdfContext {
         }
     }
 
-    public String getFontFamily() {
+    public FontFamily getFontFamily() {
         return fontFamily;
     }
 
-    private void setFontFamily(final String fontFamily) {
+    private void setFontFamily(final FontFamily fontFamily) {
         this.fontFamily = fontFamily;
     }
 
@@ -163,7 +165,7 @@ public class PdfContext {
         private Builder() {
         }
 
-        public Builder fontFamily(final String fontFamily){
+        public Builder fontFamily(final FontFamily fontFamily){
             context.setFontFamily(fontFamily);
             return this;
         }
@@ -247,6 +249,32 @@ public class PdfContext {
 
         private static synchronized Builder getInstance() {
             return LazyInit.INSTANCE;
+        }
+    }
+
+    public static enum FontFamily {
+        COURIER(PDType1Font.COURIER, 0.8f, 0.8f),
+        HELVETICA_BOLD(PDType1Font.HELVETICA_BOLD, 0.4f, 0.375f),
+        HELVETICA(PDType1Font.HELVETICA, 0.375f, 0.375f);
+
+        private final PDFont fontFamily;
+        private final float errorMarginX;
+        private final float errorMarginY;
+        private FontFamily(final PDFont fontFamily, final float errorMarginX, final float errorMarginY){
+            this.fontFamily = fontFamily;
+            this.errorMarginX = errorMarginX;
+            this.errorMarginY = errorMarginY;
+        }
+        public PDFont getFontFamily() {
+            return fontFamily;
+        }
+
+        public float getErrorMarginX() {
+            return errorMarginX;
+        }
+
+        public float getErrorMarginY() {
+            return errorMarginY;
         }
     }
 }

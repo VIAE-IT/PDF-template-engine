@@ -8,10 +8,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.junit.Test;
 
+import com.viae.common.pdf.model.PdfContext.FontFamily;
 import com.viae.common.pdf.util.TextWrapUtil.WrapResult;
 
 public class TextWrapUtilTest {
@@ -26,7 +25,7 @@ public class TextWrapUtilTest {
     @Test
     public void testWrapTextForNullString(){
         final String text = null;
-        final WrapResult<List<String>> result = TextWrapUtil.wrapText(text, PDType1Font.COURIER, 1, 1);
+        final WrapResult<List<String>> result = TextWrapUtil.wrapText(text, FontFamily.COURIER, 1, 1);
         assertNotNull(result);
         assertEquals(0, result.getMaxNumberOfLines());
         assertEquals(Collections.emptyList(), result.getWrapResult());
@@ -35,7 +34,7 @@ public class TextWrapUtilTest {
     @Test
     public void testWrapTextForEmptyString(){
         final String text = "";
-        final WrapResult<List<String>> result = TextWrapUtil.wrapText(text, PDType1Font.COURIER, 1, 1);
+        final WrapResult<List<String>> result = TextWrapUtil.wrapText(text, FontFamily.COURIER, 1, 1);
         assertNotNull(result);
         assertEquals(0, result.getMaxNumberOfLines());
         assertEquals(Collections.emptyList(), result.getWrapResult());
@@ -44,7 +43,7 @@ public class TextWrapUtilTest {
     @Test
     public void testWrapTextForSpacelessString(){
         final String text = "test";
-        final WrapResult<List<String>> result = TextWrapUtil.wrapText(text, PDType1Font.COURIER, 1, 1);
+        final WrapResult<List<String>> result = TextWrapUtil.wrapText(text, FontFamily.COURIER, 1, 1);
         assertNotNull(result);
         assertEquals(1, result.getMaxNumberOfLines());
         assertEquals("test", result.getWrapResult().get(0));
@@ -53,7 +52,7 @@ public class TextWrapUtilTest {
     @Test
     public void testWrapTextForNullArray(){
         final String[] textArray = null;
-        final WrapResult<List<List<String>>> result = TextWrapUtil.wrapText(textArray, PDType1Font.COURIER, 1, 1);
+        final WrapResult<List<List<String>>> result = TextWrapUtil.wrapText(textArray, FontFamily.COURIER, 1, 1);
         assertNotNull(result);
         assertEquals(0, result.getMaxNumberOfLines());
         assertEquals(Collections.emptyList(), result.getWrapResult());
@@ -62,7 +61,7 @@ public class TextWrapUtilTest {
     @Test
     public void testWrapTextForSingleString() {
         //GIVEN
-        final PDFont fontFamily = PDType1Font.COURIER;
+        final FontFamily fontFamily = FontFamily.COURIER;
         final float fontSize = 5;
         final float maxLineWidth = 207.43782f;
         //WHEN
@@ -81,7 +80,7 @@ public class TextWrapUtilTest {
     @Test
     public void testWrapTextForStringArray() {
         //GIVEN
-        final PDFont fontFamily = PDType1Font.COURIER;
+        final FontFamily fontFamily = FontFamily.COURIER;
         final float fontSize = 5;
         final float maxLineWidth = 207.43782f;
         final String[] input = new String[]{DUMMY_TEXT_SHORT, DUMMY_TEXT_SHORT, DUMMY_TEXT_LONG, DUMMY_TEXT_SHORT, DUMMY_TEXT_SHORT};
