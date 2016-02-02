@@ -73,14 +73,18 @@ public class PdfBuilder {
         final float width = imageWidth * scale;
         final float height = imageHeight * scale;
         final float x = context.getMarginLeft();
-        final float y = getPositionY(++line) - height;
+        final float y = getPositionY() - height;
 
         contentStream.drawXObject(ximage, x, y, width, height);
         lastY -= height;
     }
 
     protected void writeText(final String text, final PDDocument document, final PDRectangle pageSize) throws IOException{
-        float positionY = getPositionY(++line);
+        writeText(text, document, pageSize, context.getMarginLeft());
+    }
+
+    private void writeText(final String text, final PDDocument document, final PDRectangle pageSize, final float textX) throws IOException{
+        float positionY = getPositionY();
         if(positionY < 0){ //NEW PAGE
             contentStream.close();
             final PDPage page = new PDPage(pageSize);
@@ -88,15 +92,15 @@ public class PdfBuilder {
             contentStream = new PDPageContentStream(document, page);
             line = 0;
 
-            final float newPositionY = getPositionY(++line);
-            writeString(contentStream, text, context.getFontFamily().getFontFamily(), context.getFontSize(), context.getMarginLeft(), newPositionY);
+            final float newPositionY = getPositionY();
+            writeString(contentStream, text, context.getFontFamily().getFontFamily(), context.getFontSize(), textX, newPositionY);
         } else {
             final float maxLineWidth = pageSize.getWidth() - context.getMarginLeft() - context.getMarginRight();
             final WrapResult<List<String>> textWrapResult = TextWrapUtil.wrapText(text, context.getFontFamily(), context.getFontSize(), maxLineWidth);
 
             for(final String textLine : textWrapResult.getWrapResult()){
-                writeString(contentStream, textLine, context.getFontFamily().getFontFamily(), context.getFontSize(), context.getMarginLeft(), positionY);
-                positionY = getPositionY(++line);
+                writeString(contentStream, textLine, context.getFontFamily().getFontFamily(), context.getFontSize(), textX, positionY);
+                positionY = getPositionY();
             }
         }
     }
@@ -112,7 +116,7 @@ public class PdfBuilder {
         lastY = positionY - getLineHeight();
     }
 
-    protected float getPositionY(final int line){
+    protected float getPositionY(){
         return lastY - getLineHeight();
     }
 
@@ -141,7 +145,7 @@ public class PdfBuilder {
         final float colContentWidth = (colWidth - context.getCellMarginLeft() - context.getCellMarginRight());
         final WrapResult<List<List<String>>> wrapResult = TextWrapUtil.wrapText(content[0], context.getFontFamily(), context.getFontSize(), colContentWidth);
 
-        final float rowHeight = (getLineHeight() * wrapResult.getMaxNumberOfLines()) + context.getCellMarginTop() + context.getCellMarginBottom() + 2 * context.getBorderWidth();
+        final float rowHeight = (getLineHeight() * wrapResult.getMaxNumberOfLines() * 2) + 2 * context.getBorderWidth();
         final float tableHeight = rowHeight;
 
         final float y = lastY;
@@ -156,41 +160,32 @@ public class PdfBuilder {
         //draw the columns
         float nextx = context.getMarginLeft();
         for (int i = 0; i <= cols; i++) {
-            contentStream.drawLine(nextx,y,nextx,y-tableHeight);
+            contentStream.drawLine(nextx,y,nextx,y-rowHeight);
             nextx += colWidth;
         }
 
         //now add the text
+        final float temp = lastY;
         float textx = context.getMarginLeft();
-        final float texty = y + context.getCellMarginBottom();
+        //lastY -= context.getCellMarginTop();
         for(int i = 0; i < content.length; i++){
             for(int j = 0 ; j < content[i].length; j++){
-                writeWrappedString(wrapResult.getWrapResult().get(j), textx, texty);
+                for(final String text: wrapResult.getWrapResult().get(j)){
+                    writeText(text, document, page.findMediaBox(), textx + context.getCellMarginLeft());
+                }
+                lastY = temp;
                 textx += colWidth;
             }
             textx = context.getMarginLeft();
         }
 
-        lastY -= rowHeight;
+        lastY = temp - tableHeight;
     }
 
     protected float getColumnWidth(final PDPage page, final int cols) {
-        final float tableWidth = page.findMediaBox().getWidth()-(context.getMarginLeft() + context.getMarginRight()) - context.getCellMarginBottom();
+        final float tableWidth = page.findMediaBox().getWidth()-(context.getMarginLeft() + context.getMarginRight());
         final float colWidth = tableWidth/cols;
         return colWidth;
-    }
-
-    private void writeWrappedString(final List<String> textLines, final float textx, final float texty) throws IOException{
-        int lineIndex = 0;
-        for(final String text: textLines){
-            //            contentStream.beginText();
-            //            contentStream.setFont(context.getFontFamily().getFontFamily(), context.getFontSize());
-            //            contentStream.moveTextPositionByAmount(textx + context.getCellMarginLeft() , textYPosition);
-            //            contentStream.drawString(text);
-            //            contentStream.endText();
-            writeString(contentStream, text, context.getFontFamily().getFontFamily(), context.getFontSize(), textx + context.getCellMarginLeft(), texty);
-            lineIndex++;
-        }
     }
 
     public static enum ImageType {

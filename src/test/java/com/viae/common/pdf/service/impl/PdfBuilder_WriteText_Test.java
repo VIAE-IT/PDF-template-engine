@@ -73,7 +73,7 @@ public class PdfBuilder_WriteText_Test {
         doWriteText(expectedWrittenString);
 
         verifyTextWriteMethods(1);
-        final float expectedPositionY = builder.getPositionY(0);
+        final float expectedPositionY = builder.getPositionY();
         validateWriteTextResult(expectedWrittenString, PDType1Font.COURIER, Float.valueOf(0), Float.valueOf(0), expectedPositionY);
     }
 
@@ -87,7 +87,7 @@ public class PdfBuilder_WriteText_Test {
         doWriteText(expectedWrittenString);
 
         verifyTextWriteMethods(1);
-        final float expectedPositionY = builder.getPositionY(0);
+        final float expectedPositionY = builder.getPositionY();
         validateWriteTextResult(expectedWrittenString, PDType1Font.COURIER, Float.valueOf(0), Float.valueOf(0), expectedPositionY);
     }
 
