@@ -253,7 +253,7 @@ public class PdfContext {
     }
 
     public static enum FontFamily {
-        COURIER(PDType1Font.COURIER, 0.8f, 0.8f),
+        COURIER(PDType1Font.COURIER, 0.8f, 0.375f),
         HELVETICA_BOLD(PDType1Font.HELVETICA_BOLD, 0.4f, 0.375f),
         HELVETICA(PDType1Font.HELVETICA, 0.375f, 0.375f);
 

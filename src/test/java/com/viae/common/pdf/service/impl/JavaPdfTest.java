@@ -34,7 +34,7 @@ public class JavaPdfTest {
                         .lineHeight(-1)
                         .marginLeft(100)
                         .marginRight(100)
-                        .textLinePadding(1f)
+                        .textLinePadding(2f)
                         .build();
                 builder.setContext(context);
                 builder.writeImage(image, ImageType.OTHER);
@@ -53,7 +53,7 @@ public class JavaPdfTest {
                 builder.setContext(context);
                 builder.writeText("Subtitle 1");
 
-                context = PdfContext.builder()
+                /* context = PdfContext.builder()
                         .deepCopy(context)
                         .fontFamily(FontFamily.COURIER)
                         .fontSize(5)
@@ -66,7 +66,7 @@ public class JavaPdfTest {
                 builder.writeTableRow("naam1", "maarten", "vandeperre");
                 builder.writeTableRow("naam2", "VIAE is a company actively involved in IT development (going from mobile applications and webdevelopmen to providing libraries like the pdf rendering engine. It is founded by Maarten Vandeperre (software engineer, Gent).");
                 builder.writeTableRow("naam3", "maarten vandeperre");
-                builder.writeTableRow("naam4", "maarten vandeperre");
+                builder.writeTableRow("naam4", "maarten vandeperre");*/
 
                 context = PdfContext.builder()
                         .deepCopy(context)
