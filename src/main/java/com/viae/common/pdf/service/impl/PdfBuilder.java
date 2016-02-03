@@ -24,8 +24,6 @@ import com.viae.common.pdf.util.TextWrapUtil.WrapResult;
 
 public class PdfBuilder {
 
-    private static final int FONT_CORRECTING_FACTOR = 4;
-
     protected PdfContext context; //TODO make private and add protected setter
     protected PDDocument document; //TODO make private and add protected setter
     protected PDPageContentStream contentStream; //TODO make private and add protected setter
@@ -73,7 +71,7 @@ public class PdfBuilder {
         final float width = imageWidth * scale;
         final float height = imageHeight * scale;
         final float x = context.getMarginLeft();
-        final float y = getPositionY() - height;
+        final float y = getPositionY(page.findMediaBox(), height);
 
         contentStream.drawXObject(ximage, x, y, width, height);
         lastY = y;
@@ -88,40 +86,37 @@ public class PdfBuilder {
     }
 
     private void writeText(final String text, final PDDocument document, final PDRectangle pageSize, final float textX) throws IOException{
-        float positionY = getPositionY();
-        if(positionY < 0){ //NEW PAGE
-            contentStream.close();
-            final PDPage page = new PDPage(pageSize);
-            document.addPage(page);
-            contentStream = new PDPageContentStream(document, page);
-            line = 0;
+        final float maxLineWidth = pageSize.getWidth() - context.getMarginLeft() - context.getMarginRight();
+        final WrapResult<List<String>> textWrapResult = TextWrapUtil.wrapText(text, context.getFontFamily(), context.getFontSize(), maxLineWidth);
 
-            final float newPositionY = getPositionY();
-            writeString(contentStream, text, context.getFontFamily().getFontFamily(), context.getFontSize(), textX, newPositionY);
-        } else {
-            final float maxLineWidth = pageSize.getWidth() - context.getMarginLeft() - context.getMarginRight();
-            final WrapResult<List<String>> textWrapResult = TextWrapUtil.wrapText(text, context.getFontFamily(), context.getFontSize(), maxLineWidth);
-
-            for(final String textLine : textWrapResult.getWrapResult()){
-                writeString(contentStream, textLine, context.getFontFamily().getFontFamily(), context.getFontSize(), textX, positionY);
-                positionY = getPositionY();
-            }
+        for(final String textLine : textWrapResult.getWrapResult()){
+            writeString(textLine, context.getFontFamily().getFontFamily(), context.getFontSize(), textX, getPositionY(pageSize, getLineHeight()));
         }
+
     }
 
-    private void writeString(final PDPageContentStream cos, final String string, final PDFont font, final float size, final float marginLeft,
-            final float positionY)
-                    throws IOException {
-        cos.beginText();
-        cos.setFont(font, size);
-        cos.moveTextPositionByAmount(marginLeft, positionY);
-        cos.drawString(string);
-        cos.endText();
+    private void writeString(final String string, final PDFont font, final float size, final float marginLeft, final float positionY) throws IOException {
+        contentStream.beginText();
+        contentStream.setFont(font, size);
+        contentStream.moveTextPositionByAmount(marginLeft, positionY);
+        contentStream.drawString(string);
+        contentStream.endText();
         lastY = positionY - getLineHeight();
     }
+    private PDPage pageTemp;
+    protected float getPositionY(final PDRectangle pageSize, final float contentHeight) throws IOException{
+        final float positionY = lastY - contentHeight;
 
-    protected float getPositionY(){
-        return lastY - getLineHeight();
+        if(positionY < 0){ //NEW PAGE
+            pageTemp = new PDPage(pageSize);
+            document.addPage(pageTemp);
+            contentStream = new PDPageContentStream(document, pageTemp);
+            line = 0;
+            System.out.println("new page");
+            lastY = pageSize.getHeight();
+        }
+        System.out.println(lastY - contentHeight);
+        return lastY - contentHeight;
     }
 
     private float getLineHeight() {
@@ -151,6 +146,7 @@ public class PdfBuilder {
 
         final float rowHeight = (getLineHeight() * wrapResult.getMaxNumberOfLines() * 2) + 2 * context.getBorderWidth() + context.getCellMarginTop() + context.getCellMarginBottom();
         final float tableHeight = rowHeight;
+        getPositionY(page.findMediaBox(), rowHeight);
 
         final float y = lastY;
         //draw the rows

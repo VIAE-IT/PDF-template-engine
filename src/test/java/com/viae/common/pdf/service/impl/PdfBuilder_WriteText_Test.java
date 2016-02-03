@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
@@ -73,7 +74,7 @@ public class PdfBuilder_WriteText_Test {
         doWriteText(expectedWrittenString);
 
         verifyTextWriteMethods(1);
-        final float expectedPositionY = builder.getPositionY();
+        final float expectedPositionY = builder.getPositionY(PDPage.PAGE_SIZE_A4, 1);
         validateWriteTextResult(expectedWrittenString, PDType1Font.COURIER, Float.valueOf(0), Float.valueOf(0), expectedPositionY);
     }
 
@@ -87,7 +88,7 @@ public class PdfBuilder_WriteText_Test {
         doWriteText(expectedWrittenString);
 
         verifyTextWriteMethods(1);
-        final float expectedPositionY = builder.getPositionY();
+        final float expectedPositionY = builder.getPositionY(PDPage.PAGE_SIZE_A4, 1);
         validateWriteTextResult(expectedWrittenString, PDType1Font.COURIER, Float.valueOf(0), Float.valueOf(0), expectedPositionY);
     }
 

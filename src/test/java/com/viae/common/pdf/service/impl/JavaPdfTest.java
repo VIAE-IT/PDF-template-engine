@@ -143,6 +143,15 @@ public class JavaPdfTest {
                 builder.writeTableRow("naam3", "maarten vandeperre");
                 builder.writeTableRow("naam4", "maarten vandeperre");
 
+                context = PdfContext.builder()
+                        .deepCopy(context)
+                        .fontFamily(FontFamily.HELVETICA_BOLD)
+                        .fontSize(10)
+                        .build();
+                builder.setContext(context);
+                builder.writeNewLine();
+                builder.writeText("Subtitle4");
+
                 joiner.add("");
             }
         };

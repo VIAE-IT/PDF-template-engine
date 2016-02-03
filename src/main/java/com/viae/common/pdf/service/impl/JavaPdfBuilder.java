@@ -34,6 +34,11 @@ public class JavaPdfBuilder extends PdfBuilder {
                 contentStream = cos;
 
                 client.whenBuilding(this);
+                try{
+                    contentStream.close();
+                } catch(final IOException e){
+                    //TODO log debug
+                }
             }
 
             document.save(path);
