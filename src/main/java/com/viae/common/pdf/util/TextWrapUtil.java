@@ -3,7 +3,7 @@ package com.viae.common.pdf.util;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.viae.common.pdf.model.PdfContext.FontFamily;
+import com.viae.common.pdf.model.FontFamily;
 
 /**
  * Utility class to handle text wrapping within the pdf.

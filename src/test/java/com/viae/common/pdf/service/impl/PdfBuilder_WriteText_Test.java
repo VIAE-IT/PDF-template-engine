@@ -20,8 +20,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import com.viae.common.pdf.model.FontFamily;
 import com.viae.common.pdf.model.PdfContext;
-import com.viae.common.pdf.model.PdfContext.FontFamily;
 import com.viae.common.pdf.service.impl.PdfBuilder.PageSize;
 
 public class PdfBuilder_WriteText_Test {
@@ -59,8 +59,7 @@ public class PdfBuilder_WriteText_Test {
     @Before
     public void setupFreshFixture(){
         contentStream = mock(PDPageContentStream.class);
-        builder.line = 0;
-        builder.lastY = 0;
+        builder.initPageStart(PDPage.PAGE_SIZE_A4);
         document = new PDDocument();
         defaultJoiner = new StringJoiner("\n");
     }

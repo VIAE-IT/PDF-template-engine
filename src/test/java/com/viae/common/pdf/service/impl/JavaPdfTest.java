@@ -8,8 +8,8 @@ import java.util.StringJoiner;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.viae.common.pdf.model.FontFamily;
 import com.viae.common.pdf.model.PdfContext;
-import com.viae.common.pdf.model.PdfContext.FontFamily;
 import com.viae.common.pdf.service.impl.PdfBuilder.ImageType;
 import com.viae.common.pdf.service.impl.PdfBuilder.PageSize;
 
@@ -29,6 +29,8 @@ public class JavaPdfTest {
                 final StringJoiner joiner = new StringJoiner("\n");
                 context = PdfContext.builder()
                         .deepCopy(context)
+                        .marginTop(5)
+                        .marginBottom(5)
                         .fontFamily(FontFamily.HELVETICA_BOLD)
                         .fontSize(15)
                         .lineHeight(-1)
@@ -151,6 +153,23 @@ public class JavaPdfTest {
                 builder.setContext(context);
                 builder.writeNewLine();
                 builder.writeText("Subtitle4");
+
+                context = PdfContext.builder()
+                        .deepCopy(context)
+                        .fontFamily(FontFamily.HELVETICA)
+                        .fontSize(15)
+                        .build();
+                builder.setContext(context);
+                builder.writeText(DefaultString.LOREM_IPSUM + DefaultString.LOREM_IPSUM
+                        + DefaultString.LOREM_IPSUM
+                        + DefaultString.LOREM_IPSUM
+                        + DefaultString.LOREM_IPSUM
+                        + DefaultString.LOREM_IPSUM
+                        + DefaultString.LOREM_IPSUM
+                        + DefaultString.LOREM_IPSUM
+                        + DefaultString.LOREM_IPSUM
+                        + " ; the end");
+                builder.writeNewLine();
 
                 joiner.add("");
             }

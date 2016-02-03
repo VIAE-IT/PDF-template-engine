@@ -4,8 +4,6 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 import com.viae.common.pojo.PojoBuilder;
 
@@ -21,6 +19,8 @@ public class PdfContext {
     private float fontSize;
     private float marginLeft;
     private float marginRight;
+    private float marginTop;
+    private float marginBottom;
     private float lineHeight;
     private float borderWidth;
     private float cellMarginLeft;
@@ -39,6 +39,8 @@ public class PdfContext {
             setFontSize(toCopy.getFontSize());
             setMarginLeft(toCopy.getMarginLeft());
             setMarginRight(toCopy.getMarginRight());
+            setMarginTop(toCopy.getMarginTop());
+            setMarginBottom(toCopy.getMarginBottom());
             setLineHeight(toCopy.getLineHeight());
             setBorderWidth(toCopy.getBorderWidth());
             setCellMarginBottom(toCopy.getCellMarginBottom());
@@ -137,6 +139,22 @@ public class PdfContext {
         this.textLinePadding = textLinePadding;
     }
 
+    public float getMarginTop() {
+        return marginTop;
+    }
+
+    private void setMarginTop(final float marginTop) {
+        this.marginTop = marginTop;
+    }
+
+    public float getMarginBottom() {
+        return marginBottom;
+    }
+
+    private void setMarginBottom(final float marginBottom) {
+        this.marginBottom = marginBottom;
+    }
+
     public static final Builder builder(){
         return Builder.getInstance().clean();
     }
@@ -182,6 +200,16 @@ public class PdfContext {
 
         public Builder marginRight(final float marginRight){
             context.setMarginRight(marginRight);
+            return this;
+        }
+
+        public Builder marginTop(final float marginTop){
+            context.setMarginTop(marginTop);
+            return this;
+        }
+
+        public Builder marginBottom(final float marginBottom){
+            context.setMarginBottom(marginBottom);
             return this;
         }
 
@@ -249,32 +277,6 @@ public class PdfContext {
 
         private static synchronized Builder getInstance() {
             return LazyInit.INSTANCE;
-        }
-    }
-
-    public static enum FontFamily {
-        COURIER(PDType1Font.COURIER, 0.8f, 0.375f),
-        HELVETICA_BOLD(PDType1Font.HELVETICA_BOLD, 0.4f, 0.375f),
-        HELVETICA(PDType1Font.HELVETICA, 0.375f, 0.375f);
-
-        private final PDFont fontFamily;
-        private final float errorMarginX;
-        private final float errorMarginY;
-        private FontFamily(final PDFont fontFamily, final float errorMarginX, final float errorMarginY){
-            this.fontFamily = fontFamily;
-            this.errorMarginX = errorMarginX;
-            this.errorMarginY = errorMarginY;
-        }
-        public PDFont getFontFamily() {
-            return fontFamily;
-        }
-
-        public float getErrorMarginX() {
-            return errorMarginX;
-        }
-
-        public float getErrorMarginY() {
-            return errorMarginY;
         }
     }
 }

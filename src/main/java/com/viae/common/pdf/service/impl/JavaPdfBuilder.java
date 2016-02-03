@@ -18,7 +18,7 @@ public class JavaPdfBuilder extends PdfBuilder {
         context = PdfContext.builder().create().build();
     }
 
-    public static interface BuilderClient {
+    protected static interface BuilderClient {
         void whenBuilding(JavaPdfBuilder builder);
     }
 
@@ -27,8 +27,7 @@ public class JavaPdfBuilder extends PdfBuilder {
             this.document = document;
             this.pageState = new PDPage(getPageSize(pageSize));
             document.addPage(pageState);
-            line = 0;
-            lastY = pageState.findMediaBox().getHeight();
+            initPageStart(pageState.findMediaBox());
 
             try(final PDPageContentStream cos = new PDPageContentStream(document, pageState)){
                 contentStream = cos;

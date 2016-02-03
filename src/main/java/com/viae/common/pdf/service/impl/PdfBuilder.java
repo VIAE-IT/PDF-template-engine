@@ -27,8 +27,7 @@ public class PdfBuilder {
     protected PdfContext context; //TODO make private and add protected setter
     protected PDDocument document; //TODO make private and add protected setter
     protected PDPageContentStream contentStream; //TODO make private and add protected setter
-    protected int line; //TODO make private and add protected setter
-    protected float lastY; //TODO make private and add protected setter
+    private float lastY; //TODO make private and add protected setter
 
     public PdfBuilder(){
         context = PdfContext.builder().create().build();
@@ -103,20 +102,21 @@ public class PdfBuilder {
         contentStream.endText();
         lastY = positionY - getLineHeight();
     }
-    private PDPage pageTemp;
+
     protected float getPositionY(final PDRectangle pageSize, final float contentHeight) throws IOException{
         final float positionY = lastY - contentHeight;
-
-        if(positionY < 0){ //NEW PAGE
-            pageTemp = new PDPage(pageSize);
+        if(positionY < context.getMarginBottom()){ //NEW PAGE
+            final PDPage pageTemp = new PDPage(pageSize);
             document.addPage(pageTemp);
+            contentStream.close();
             contentStream = new PDPageContentStream(document, pageTemp);
-            line = 0;
-            System.out.println("new page");
-            lastY = pageSize.getHeight();
+            initPageStart(pageSize);
         }
-        System.out.println(lastY - contentHeight);
         return lastY - contentHeight;
+    }
+
+    protected void initPageStart(final PDRectangle pageSize){
+        lastY = pageSize.getHeight() - context.getMarginTop();
     }
 
     private float getLineHeight() {

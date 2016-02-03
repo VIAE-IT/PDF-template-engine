@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.viae.common.pdf.model.PdfContext.FontFamily;
+import com.viae.common.pdf.model.FontFamily;
 import com.viae.common.pdf.util.TextWrapUtil.WrapResult;
 
 public class TextWrapUtilTest {

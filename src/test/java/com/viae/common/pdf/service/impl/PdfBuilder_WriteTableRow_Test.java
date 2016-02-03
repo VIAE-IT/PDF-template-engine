@@ -19,8 +19,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import com.viae.common.pdf.model.FontFamily;
 import com.viae.common.pdf.model.PdfContext;
-import com.viae.common.pdf.model.PdfContext.FontFamily;
 
 public class PdfBuilder_WriteTableRow_Test {
 
@@ -56,8 +56,7 @@ public class PdfBuilder_WriteTableRow_Test {
     @Before
     public void setupFreshFixture(){
         contentStream = mock(PDPageContentStream.class);
-        builder.line = 0;
-        builder.lastY = 0;
+        builder.initPageStart(PDPage.PAGE_SIZE_A4);
         page = new PDPage(PDPage.PAGE_SIZE_A4);
     }
 
