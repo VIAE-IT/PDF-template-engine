@@ -82,4 +82,13 @@ public class JavaPdfBuilder extends PdfBuilder {
         }
     }
 
+    public void writeNewLine(){
+        try {
+            writeNewLine(document, pageState.findMediaBox());
+        }
+        catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

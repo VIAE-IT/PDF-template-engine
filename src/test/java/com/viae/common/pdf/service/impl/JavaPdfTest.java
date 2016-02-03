@@ -74,6 +74,7 @@ public class JavaPdfTest {
                         .fontSize(10)
                         .build();
                 builder.setContext(context);
+                builder.writeNewLine();
                 builder.writeText("Subtitle2");
 
                 context = PdfContext.builder()
@@ -83,14 +84,16 @@ public class JavaPdfTest {
                         .build();
                 builder.setContext(context);
                 builder.writeText(DefaultString.LOREM_IPSUM);
+                builder.writeNewLine();
 
                 context = PdfContext.builder()
                         .deepCopy(context)
-                        .fontFamily(FontFamily.COURIER)
+                        .fontFamily(FontFamily.HELVETICA)
                         .fontSize(5)
                         .build();
                 builder.setContext(context);
                 builder.writeText(DefaultString.LOREM_IPSUM + DefaultString.LOREM_IPSUM + DefaultString.LOREM_IPSUM + DefaultString.LOREM_IPSUM + " ; the end");
+                builder.writeNewLine();
 
                 context = PdfContext.builder()
                         .deepCopy(context)
@@ -99,6 +102,31 @@ public class JavaPdfTest {
                         .build();
                 builder.setContext(context);
                 builder.writeText(DefaultString.LOREM_IPSUM);
+                builder.writeNewLine();
+
+                context = PdfContext.builder()
+                        .deepCopy(context)
+                        .fontFamily(FontFamily.COURIER)
+                        .fontSize(5)
+                        .cellMarginLeft(10)
+                        .cellMarginTop(10)
+                        .cellMarginBottom(10)
+                        .build();
+                builder.setContext(context);
+                builder.writeTableRow("Table header");
+                builder.writeTableRow("naam1", "maarten", "vandeperre");
+                builder.writeTableRow("naam2", "VIAE is a company actively involved in IT development (going from mobile applications and webdevelopmen to providing libraries like the pdf rendering engine. It is founded by Maarten Vandeperre (software engineer, Gent).");
+                builder.writeTableRow("naam3", "maarten vandeperre");
+                builder.writeTableRow("naam4", "maarten vandeperre");
+
+                context = PdfContext.builder()
+                        .deepCopy(context)
+                        .fontFamily(FontFamily.HELVETICA_BOLD)
+                        .fontSize(10)
+                        .build();
+                builder.setContext(context);
+                builder.writeNewLine();
+                builder.writeText("Subtitle3");
 
                 joiner.add("");
             }

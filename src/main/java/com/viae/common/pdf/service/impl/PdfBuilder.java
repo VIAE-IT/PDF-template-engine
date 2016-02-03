@@ -76,7 +76,11 @@ public class PdfBuilder {
         final float y = getPositionY() - height;
 
         contentStream.drawXObject(ximage, x, y, width, height);
-        lastY -= height;
+        lastY = y;
+    }
+
+    protected void writeNewLine(final PDDocument document, final PDRectangle pageSize) throws IOException{
+        writeText("\n", document, pageSize, context.getMarginLeft());
     }
 
     protected void writeText(final String text, final PDDocument document, final PDRectangle pageSize) throws IOException{
@@ -145,7 +149,7 @@ public class PdfBuilder {
         final float colContentWidth = (colWidth - context.getCellMarginLeft() - context.getCellMarginRight());
         final WrapResult<List<List<String>>> wrapResult = TextWrapUtil.wrapText(content[0], context.getFontFamily(), context.getFontSize(), colContentWidth);
 
-        final float rowHeight = (getLineHeight() * wrapResult.getMaxNumberOfLines() * 2) + 2 * context.getBorderWidth();
+        final float rowHeight = (getLineHeight() * wrapResult.getMaxNumberOfLines() * 2) + 2 * context.getBorderWidth() + context.getCellMarginTop() + context.getCellMarginBottom();
         final float tableHeight = rowHeight;
 
         final float y = lastY;
@@ -165,6 +169,7 @@ public class PdfBuilder {
         }
 
         //now add the text
+        lastY -= context.getCellMarginTop();
         final float temp = lastY;
         float textx = context.getMarginLeft();
         //lastY -= context.getCellMarginTop();
@@ -179,7 +184,7 @@ public class PdfBuilder {
             textx = context.getMarginLeft();
         }
 
-        lastY = temp - tableHeight;
+        lastY = temp - tableHeight + context.getCellMarginTop();
     }
 
     protected float getColumnWidth(final PDPage page, final int cols) {
